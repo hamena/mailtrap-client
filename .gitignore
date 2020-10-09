@@ -2,7 +2,13 @@
 .classpath
 .project
 .settings/
-target/
+
+# VSCode files
+.vscode
+
+# Maven files
+target
+target/*
 
 # Other
 .README.md.html
