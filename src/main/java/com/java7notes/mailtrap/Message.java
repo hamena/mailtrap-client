@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Represents an Inbox message, use getHtml() to retrieve its contents.
  * 
  * @author jxc876
+ * @author hamena
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Message {

@@ -21,36 +21,11 @@ package com.java7notes.mailtrap;
 
 import java.util.List;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-
-import org.glassfish.jersey.jackson.JacksonFeature;
 
 /**
- * A Java wrapper around the MailTrap Restful API (http://docs.mailtrap.apiary.io/)
- * 
- * This class requires that you know your API key & inbox id.
- * 
- * 
- * api key
- * --------
- * To get your API key, login into Mailtrap and navigate to the following URL:
- * https://mailtrap.io/public_api
- * 
- * inbox id
- * ---------
- * You can find the Inbox id, by looking at the url:
- * https://mailtrap.io/inboxes/16667/messages  (16667 is the inbox id)
- * 
- * Look at com.java7notes.mailtrap.demo.Demo for example usage.
- * 
- * 
- * 
  * @author jxc876
+ * @author hamena
  */
 public class Mailtrap {
 	

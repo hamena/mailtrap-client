@@ -24,6 +24,10 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.core.MediaType;
 
+/**
+ * 
+ * @author hamena
+ */
 public class MailtrapAPI {
     
     private final String baseUrl = "https://mailtrap.io/";
