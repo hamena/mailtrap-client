@@ -1,3 +1,22 @@
+/*
+Simple Java wrapper for Mailtrap API Rest
+Copyright (C) 2014 jxc876
+
+This file is part of Mailtrap Java Client.
+
+Mailtrap Java Client is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+Mailtrap Java Client is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Mailtrap Java Client.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package com.java7notes.mailtrap;
 
 import java.util.List;
@@ -35,42 +54,31 @@ import org.glassfish.jersey.jackson.JacksonFeature;
  */
 public class Mailtrap {
 	
-	public final String baseUrl = "https://mailtrap.io";
-	private final String inboxUrl = "/api/v1/inboxes/{inbox_id}"; 
-    private final String messagesUrl = "/api/v1/inboxes/{inbox_id}/messages";
-	private final String deleteMsg = "/api/v1/inboxes/{inbox_id}/messages/{id}";
-
-    
-	private String apiToken;
+	private MailtrapAPI apirest;
 	
 	public Mailtrap(String apiToken){
-		this.apiToken = apiToken;
+		this.apirest = new MailtrapAPI(apiToken);
 	}
-	
-	private Builder configure(String url){
-    	Client client = ClientBuilder.newClient().register(JacksonFeature.class);
-    	WebTarget webTarget = client.target(baseUrl + url).queryParam("api_token", apiToken);
-    	return webTarget.request(MediaType.APPLICATION_JSON_TYPE);
-	}
-	
 	
 	public Inbox getInbox(String inboxId){
-    	String url = inboxUrl.replace("{inbox_id}", inboxId);
-    	Inbox inbox = configure(url).get(Inbox.class);	
+    	String url = apirest.getInboxUrl(inboxId);
+		Inbox inbox = apirest.configure(url).get(Inbox.class);
 		return inbox;
 	}
 
 	public List<Message> getMessages(Inbox inbox){
-		String url = messagesUrl.replace("{inbox_id}", inbox.getId());
-		List<Message> msgs = configure(url).get(new GenericType<List<Message>>(){});
+		String url = apirest.getMessagesUrl(inbox.getId());
+		List<Message> msgs = apirest.configure(url).get(new GenericType<List<Message>>(){});
+		for (Message msg : msgs) {
+			msg.setup(apirest);
+		}
 		return msgs;
 	}
 	
 	
 	public void deleteMessage(Inbox inbox, Message msg){
-		String url = deleteMsg.replace("{inbox_id}", inbox.getId());
-		url = url.replace("{id}", msg.getId());
-		configure(url).delete();
+		String url = apirest.getMessageUrl(inbox.getId(), msg.getId());
+		apirest.configure(url).delete();
 	}
 
 	/*
