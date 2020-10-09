@@ -34,11 +34,15 @@ public class Mailtrap {
 	public Mailtrap(String apiToken){
 		this.apirest = new MailtrapAPI(apiToken);
 	}
+
+	public User getUser() {
+		String url = apirest.getUserUrl();
+		return apirest.configure(url).get(User.class);
+	}
 	
 	public Inbox getInbox(String inboxId){
     	String url = apirest.getInboxUrl(inboxId);
-		Inbox inbox = apirest.configure(url).get(Inbox.class);
-		return inbox;
+		return apirest.configure(url).get(Inbox.class);
 	}
 
 	public List<Message> getMessages(Inbox inbox){

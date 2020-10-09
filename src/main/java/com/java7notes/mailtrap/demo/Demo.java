@@ -25,6 +25,7 @@ import java.util.List;
 import com.java7notes.mailtrap.Inbox;
 import com.java7notes.mailtrap.Mailtrap;
 import com.java7notes.mailtrap.Message;
+import com.java7notes.mailtrap.User;
 
 /**
  * This class shows how to use the MailTrap classes,
@@ -40,13 +41,14 @@ public class Demo
     	String apiToken = "99999999999999999";
     	String inboxId = "12345";
     	
-    	Mailtrap mailtrap = new Mailtrap(apiToken);
+		Mailtrap mailtrap = new Mailtrap(apiToken);
+		User user = mailtrap.getUser();
+		System.out.println(user.getName());
+
     	Inbox inbox = mailtrap.getInbox(inboxId);
-    	    	
     	System.out.println("unread messages = " + inbox.getEmailsUnreadCount());
     	
     	List<Message> messages = mailtrap.getMessages(inbox);
-    	
     	if (messages.size() > 0){
         	Message msg = messages.get(0);
         	String html = msg.getHtml();

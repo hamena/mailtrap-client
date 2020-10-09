@@ -31,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 public class MailtrapAPI {
     
     private final String baseUrl = "https://mailtrap.io/";
+    private final String userUrl = "api/v1/user";
 	private final String inboxUrl = "api/v1/inboxes/{inbox_id}"; 
     private final String messagesUrl = "api/v1/inboxes/{inbox_id}/messages";
     private final String messageUrl = "api/v1/inboxes/{inbox_id}/messages/{id}";
@@ -46,17 +47,21 @@ public class MailtrapAPI {
 	public Builder configure(String url){
         return client.target(url).queryParam("api_token", apiToken).request(MediaType.APPLICATION_JSON);
     }
+
+    public String getUserUrl() {
+        return baseUrl + userUrl;
+    }
     
     public String getInboxUrl(String inboxId) {
-        return baseUrl+inboxUrl.replace("{inbox_id}", inboxId);
+        return baseUrl + inboxUrl.replace("{inbox_id}", inboxId);
     }
 
     public String getMessagesUrl(String inboxId) {
-        return baseUrl+messagesUrl.replace("{inbox_id}", inboxId);
+        return baseUrl + messagesUrl.replace("{inbox_id}", inboxId);
     }
 
     public String getMessageUrl(String inboxId, String messageId) {
-        return baseUrl+messageUrl.replace("{inbox_id}", inboxId).replace("{message_id}", messageId);
+        return baseUrl + messageUrl.replace("{inbox_id}", inboxId).replace("{message_id}", messageId);
     }
 
     public String buildUrl(String customEndpoint) {
