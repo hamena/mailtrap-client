@@ -4,7 +4,7 @@
 
 	<groupId>com.java7notes</groupId>
 	<artifactId>mailtrap-client</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.5-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>mailtrap-client</name>

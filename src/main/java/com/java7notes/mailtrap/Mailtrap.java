@@ -19,7 +19,9 @@ along with Mailtrap Java Client.  If not, see <http://www.gnu.org/licenses/>.
 */
 package com.java7notes.mailtrap;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import javax.ws.rs.core.GenericType;
 
@@ -30,9 +32,15 @@ import javax.ws.rs.core.GenericType;
 public class Mailtrap {
 	
 	private MailtrapAPI apirest;
+
+	private long maxWaitMillis = 10000L;
 	
 	public Mailtrap(String apiToken){
 		this.apirest = new MailtrapAPI(apiToken);
+	}
+
+	public void setImplicitWait(int seconds) {
+		maxWaitMillis = seconds * 1000;
 	}
 
 	public User getUser() {
@@ -54,41 +62,48 @@ public class Mailtrap {
 		return msgs;
 	}
 	
-	public Message getMessage(Inbox inbox, String from, boolean isRead) {
+	public List<Message> getMessages(Inbox inbox, SearchCriteria criteria) {
+		String url = apirest.getMessagesUrl(inbox.getId());
+		List<Message> msgs = apirest.configure(url).get(new GenericType<List<Message>>(){});
+		List<Message> filtered = new ArrayList<>();
+		for (Message msg : msgs) {
+			if (criteria.evaluate(msg)) {
+				msg.setup(apirest);
+				filtered.add(msg);
+			}
+		}
+		return filtered;
+	}
+
+	public Message getLastMessage(Inbox inbox) {
+		String url = apirest.getMessagesUrl(inbox.getId());
+		List<Message> msgs = apirest.configure(url).get(new GenericType<List<Message>>(){});
+		Message lastMessage = msgs.isEmpty() ? null : msgs.get(msgs.size()-1);
+		if (lastMessage != null) {
+			lastMessage.setup(apirest);
+		}
+		return lastMessage;
+	}
+	
+	public Message getMessage(Inbox inbox, SearchCriteria criteria) throws TimeoutException {
 		String url = apirest.getMessagesUrl(inbox.getId());
 		List<Message> msgs = apirest.configure(url).get(new GenericType<List<Message>>(){});
 		long current = System.currentTimeMillis();
-		long end = current + 10000;
+		long end = current + maxWaitMillis;
 		while (current < end) {
 			for (Message msg : msgs) {
-				if (msg.getFromEmail().equals(from) && msg.isRead() == isRead) {
+				if (criteria.evaluate(msg)) {
 					msg.setup(apirest);
 					return msg;
 				}
 			}
 			current = System.currentTimeMillis();
 		}
-		return null;
+		throw new TimeoutException("There aren't any message that satisfies search criteria in given time");
 	}
 	
 	public void deleteMessage(Inbox inbox, Message msg){
 		String url = apirest.getMessageUrl(inbox.getId(), msg.getId());
 		apirest.configure(url).delete();
 	}
-
-	/*
-	 * The MailTrap API requires using PATCH, however Jersey client doesn't support it.
-	 * I tried using the 'X-HTTP-Method' workaround but doesn't seem to be supported.
-	 * TODO: Use 'Apache Http Client' for PATCH requests.
-	 * @param inbox
-	 *
-	private final String cleanInboxUrl = "/api/v1/inboxes/{inbox_id}/clean";
-	public void cleanInbox(Inbox inbox) {
-		System.out.println("cleaning inbox");
-	    String url = cleanInboxUrl.replace("{inbox_id}", inbox.id);
-	    Response response = configure(url).header("X-HTTP-Method-Override", "PATCH").get();
-	    System.out.println("status = " + response.getStatus());
-	}
-	*/
-	
 }
