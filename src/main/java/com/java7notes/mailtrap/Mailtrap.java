@@ -97,6 +97,7 @@ public class Mailtrap {
 					return msg;
 				}
 			}
+			msgs = apirest.configure(url).get(new GenericType<List<Message>>(){});
 			current = System.currentTimeMillis();
 		}
 		throw new TimeoutException("There aren't any message that satisfies search criteria in given time");
