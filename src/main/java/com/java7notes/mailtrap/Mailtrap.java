@@ -54,6 +54,22 @@ public class Mailtrap {
 		return msgs;
 	}
 	
+	public Message getMessage(Inbox inbox, String from, boolean isRead) {
+		String url = apirest.getMessagesUrl(inbox.getId());
+		List<Message> msgs = apirest.configure(url).get(new GenericType<List<Message>>(){});
+		long current = System.currentTimeMillis();
+		long end = current + 10000;
+		while (current < end) {
+			for (Message msg : msgs) {
+				if (msg.getFromEmail().equals(from) && msg.isRead() == isRead) {
+					msg.setup(apirest);
+					return msg;
+				}
+			}
+			current = System.currentTimeMillis();
+		}
+		return null;
+	}
 	
 	public void deleteMessage(Inbox inbox, Message msg){
 		String url = apirest.getMessageUrl(inbox.getId(), msg.getId());

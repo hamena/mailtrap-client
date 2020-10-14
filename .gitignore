@@ -13,3 +13,5 @@ target/*
 # Other
 .README.md.html
 /bin
+.DS_Store
+*/.DS_Store
