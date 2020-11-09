@@ -34,7 +34,7 @@ public class MailtrapAPI {
     private final String userUrl = "api/v1/user";
 	private final String inboxUrl = "api/v1/inboxes/{inbox_id}"; 
     private final String messagesUrl = "api/v1/inboxes/{inbox_id}/messages";
-    private final String messageUrl = "api/v1/inboxes/{inbox_id}/messages/{id}";
+    private final String messageUrl = "api/v1/inboxes/{inbox_id}/messages/{message_id}";
     
     private String apiToken;
 
